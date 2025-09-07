@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale = 0;
+        Time.timeScale = 1; //ALTER TO 0 AFTER TESTS
         MedicMenuOpen = false;
     }
 
@@ -51,7 +51,6 @@ public class GameController : MonoBehaviour
         MedicMenu.SetActive(true);
         MedicMenuOpen = true;
     }
-
 
     //Scenery
     IEnumerator PlayIntro() //Makes the Intro
