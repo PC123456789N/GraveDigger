@@ -1,8 +1,4 @@
-using System.Transactions;
 using System;
-using System.Net.NetworkInformation;
-using System.Threading.Tasks.Dataflow;
-using System.Numerics;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -11,7 +7,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float enemySpeed = 5f;
     [SerializeField] private float visionRange = 200f;
 
-    [SerializeField] private RigidBody2D playerRb; // to raycast against them
+    [SerializeField] private Rigidbody2D playerRb; // to raycast against them
 
     private Rigidbody2D rb;
     private Animator anima;
