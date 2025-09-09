@@ -11,7 +11,7 @@ public class EnemyController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Animator anima;
-    private float isPatrolling;
+    private bool isPatrolling;
     private float lastSeenPlayer;
 
     public int facing; // -1 for left, 1 for right
@@ -44,7 +44,8 @@ public class EnemyController : MonoBehaviour
 
         if (Mathf.Sign(playerRb.position.x - transform.position.x) == facing) // is facing player
         {
-            if (Physics2D.Raycast(transform.position, directionToPlayer, out hit, 200f)) // can see player
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, 200f)
+            if (hit != null) // can see player
             {
                 GameObject hitObject = hit.collider.gameObject;
 
