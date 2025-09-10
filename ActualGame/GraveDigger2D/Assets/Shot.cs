@@ -27,7 +27,9 @@ public class Shot : MonoBehaviour
 
         // Destroi a bala quando colidir com QUALQUER coisa - o player
 
-        if (other.CompareTag("Player")) ;
+        if (other.CompareTag("Player")) {
+            Debug.Log("hitted player");   
+        }
 
         else
         {

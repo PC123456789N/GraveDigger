@@ -10,16 +10,20 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Rigidbody2D playerRb; // to raycast against them
 
     private Rigidbody2D rb;
-    private Animator anima;
-    private bool isPatrolling;
+    private Animator animaRoyal;
+    [SerializeField]private bool isPatrolling;
     private float lastSeenPlayer;
+    private float lastRaycast;
 
     public int facing; // -1 for left, 1 for right
     public bool walking;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+        animaRoyal = GetComponent<Animator>();
         facing = 1;
+        walking = true;
     }
 
     void Update()
@@ -30,22 +34,21 @@ public class EnemyController : MonoBehaviour
             rb.velocity = new Vector2(facing * enemySpeed, 0);
 
             transform.localScale = new Vector3(facing, 1, 1);
-            anima.SetBool("Walking", true);
+            animaRoyal.SetBool("Walking", true);
         }
 
         else
         {
-            anima.SetBool("Walking", false);
+            animaRoyal.SetBool("Walking", false);
         }
 
         // raycast to the player to see if the enemy can see them
-        RaycastHit2D hit;
         Vector2 directionToPlayer = (playerRb.position - (Vector2)transform.position).normalized;
 
-        if (Mathf.Sign(playerRb.position.x - transform.position.x) == facing) // is facing player
+        if (Mathf.Sign(playerRb.position.x - transform.position.x) == facing && (Time.time > lastRaycast + 0.2f)) // is facing player
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, 200f)
-            if (hit != null) // can see player
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, 200f);
+            if (hit.collider != null) // can see player
             {
                 GameObject hitObject = hit.collider.gameObject;
 
@@ -57,6 +60,7 @@ public class EnemyController : MonoBehaviour
                     isPatrolling = true;
                 }
             }
+            lastRaycast = Time.time;
         }
 
 
@@ -67,6 +71,6 @@ public class EnemyController : MonoBehaviour
         //     Physics2D.Raycast(transform.position + facing * 16f, transform.position + facing * 0.5f, out hit) ||)
         // {
 
-        // }
-    }
+        // }
+    }
 }
