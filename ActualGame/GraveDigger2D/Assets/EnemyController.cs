@@ -94,6 +94,7 @@ public class EnemyController : MonoBehaviour
 
         if (hit.collider != null)
         {
+            //TODO: add check for terrain
             facing *= -1; // set to inverse
             return true;
         }
@@ -108,7 +109,7 @@ public class EnemyController : MonoBehaviour
         Vector2 rayOrigin = transform.position + new Vector2(groundForward * facing);
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, groundDown);
 
-        if (hit.collider != null)
+        if (hit.collider == null)
         {
             facing *= -1; // set to inverse
             return true;
