@@ -57,7 +57,7 @@ public class EnemyController : MonoBehaviour
             {
                 GameObject hitObject = hit.collider.gameObject;
 
-                Debug.log("Inimigo viu player!")
+                Debug.log("Inimigo viu player!");
                 //Debug.DrawRay(transform.position, directionToPlayer * 200f, Color.red);
 
                 if (hitObject.CompareTag("Player")) // is player
