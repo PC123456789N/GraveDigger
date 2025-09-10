@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Timers;
+using System.Threading;
 using System;
 using UnityEngine;
 
@@ -13,12 +16,21 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float wallRange;
     [SerializeField] private float groundForward;
     [SerializeField] private float groundDown; // goddamn, just ask my if you have any questions
+    [SerializeField] private float targetEngagementDistance;
+    [SerializeField] private float acceptableRange;
 
+
+    [Header("Others")]
     private Rigidbody2D rb;
     private Animator animaRoyal;
-    [SerializeField] private bool isPatrolling;
+    [SerializeField] private bool inCombat;
+    [SerializeField] private bool shankingRange; // esfaquear
     private float lastSeenPlayer;
     private float lastRaycast;
+    private float lastShot;
+    private float lastSeenPlayer;
+
+    [SerializeField] private float shootCooldown;
 
     public int facing; // -1 for left, 1 for right
     public bool walking;
@@ -63,10 +75,54 @@ public class EnemyController : MonoBehaviour
                 if (hitObject.CompareTag("Player")) // is player
                 {
                     // could have put most of these in a single if, but eh
-                    isPatrolling = true;
+                    inCombat = true;
                 }
             }
             lastRaycast = Time.time;
+        }
+
+        if (inCombat)
+        {
+            if (!CanSeePlayer())
+            {
+                if (Time.time > lastSeenPlayer + 30f)
+                {
+                    //TODO: should start search idk
+                    inCombat = false;
+                }
+            }
+            else
+            {
+                lastSeenPlayer = Time.time;
+            }
+
+            // move backwards or forwards to get within a set amount from target
+            float direction = -Mathf.Sign(playerRb.position.x - transform.position.x);
+
+            float targetX = direction * targetEngagementDistance + playerRb.position.x;
+
+            if (Mathf.abs(targetX - transform.position.x) > acceptableRange)
+            {
+                // move towards targetX
+                // face towards player
+                facing = -direction; // this just works, i can assure you
+                // override previous velocity
+                rb.velocity = new Vector2(Mathf.Sign(targetX - transform.position.x) * enemySpeed, 0);
+            }
+
+
+            if (Time.time >= lastShot + shootCooldown)
+            {
+                // try to shoot at player
+                Debug.Log("pewpewpew o inimigo tentou atirar!");
+                lastShot = Timer.time;
+            }
+
+            // shank if too close
+            if (Mathf.abs(playerRb.position.x - transform.position.x) < shankingRange)
+            {
+                Debug.Log("O inimigo tentou esfaquear o player!");
+            }
         }
 
 
@@ -86,10 +142,27 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    bool CanSeePlayer()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, 200f);
+
+        if (hit.collider != null)
+        {
+            GameObject hitObject = hit.collider.gameObject;
+
+            if (hitObject.CompareTag("Player")) // is player
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     bool CheckWall()
     {
         // setting facing will automatically turn around the enemy on next frame btw
-        Vector2 direction = facing == 1 ? Vector2.right : Vector256.left;
+        Vector2 direction = facing == 1 ? Vector2.right : Vector2.left;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallRange);
 
         if (hit.collider != null)
