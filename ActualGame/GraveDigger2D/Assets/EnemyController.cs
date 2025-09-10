@@ -9,9 +9,14 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private Rigidbody2D playerRb; // to raycast against them
 
+    [Header("Raycast settings")]
+    [SerializeField] private float wallRange;
+    [SerializeField] private float groundForward;
+    [SerializeField] private float groundDown; // goddamn, just ask my if you have any questions
+
     private Rigidbody2D rb;
     private Animator animaRoyal;
-    [SerializeField]private bool isPatrolling;
+    [SerializeField] private bool isPatrolling;
     private float lastSeenPlayer;
     private float lastRaycast;
 
@@ -71,6 +76,43 @@ public class EnemyController : MonoBehaviour
         //     Physics2D.Raycast(transform.position + facing * 16f, transform.position + facing * 0.5f, out hit) ||)
         // {
 
-        // }
-    }
+        // }
+
+        // these have side effects btw :wink:
+        if (!CheckWall())
+        { // only turn once, never know these damn edge cases
+            CheckGround();
+        }
+    }
+
+    bool CheckWall()
+    {
+        // setting facing will automatically turn around the enemy on next frame btw
+        Vector2 direction = facing == 1 ? Vector2.right : Vector256.left;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallRange);
+
+        if (hit.collider != null)
+        {
+            facing *= -1; // set to inverse
+            return true;
+        }
+
+        return false;
+    }
+
+    bool CheckGround()
+    {
+        // same comment from before
+        // direction is down
+        Vector2 rayOrigin = transform.position + new Vector2(groundForward * facing);
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, groundDown);
+
+        if (hit.collider != null)
+        {
+            facing *= -1; // set to inverse
+            return true;
+        }
+
+        return false;
+    }
 }
