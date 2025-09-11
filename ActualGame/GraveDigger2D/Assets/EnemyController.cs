@@ -24,16 +24,16 @@ public class EnemyController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animaRoyal;
     [SerializeField] private bool inCombat;
-    [SerializeField] private bool shankingRange; // esfaquear
+    [SerializeField] private float shankingRange; // esfaquear
     private float lastSeenPlayer;
     private float lastRaycast;
     private float lastShot;
-    private float lastSeenPlayer;
-
     [SerializeField] private float shootCooldown;
 
     public int facing; // -1 for left, 1 for right
     public bool walking;
+
+    private Vector2 directionToPlayer;
 
     void Start()
     {
@@ -64,21 +64,28 @@ public class EnemyController : MonoBehaviour
 
         if (Mathf.Sign(playerRb.position.x - transform.position.x) == facing && (Time.time > lastRaycast + 0.2f)) // is facing player
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, 200f);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, visionRange);
             if (hit.collider != null) // can see player
             {
                 GameObject hitObject = hit.collider.gameObject;
 
-                Debug.log("Inimigo viu player!");
-                //Debug.DrawRay(transform.position, directionToPlayer * 200f, Color.red);
+                UnityEngine.Debug.Log("Inimigo viu Coisa!" + hitObject.name);
+                UnityEngine.Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.red);
 
                 if (hitObject.CompareTag("Player")) // is player
                 {
                     // could have put most of these in a single if, but eh
                     inCombat = true;
+                    UnityEngine.Debug.Log("Inimigo viu Player!");
                 }
             }
+            else
+            {
+                UnityEngine.Debug.Log("he saw nothing");
+                
+            }
             lastRaycast = Time.time;
+            
         }
 
         if (inCombat)
@@ -101,11 +108,11 @@ public class EnemyController : MonoBehaviour
 
             float targetX = direction * targetEngagementDistance + playerRb.position.x;
 
-            if (Mathf.abs(targetX - transform.position.x) > acceptableRange)
+            if (Mathf.Abs(targetX - transform.position.x) > acceptableRange)
             {
                 // move towards targetX
                 // face towards player
-                facing = -direction; // this just works, i can assure you
+                facing = (int)-direction; // this just works, i can assure you
                 // override previous velocity
                 rb.velocity = new Vector2(Mathf.Sign(targetX - transform.position.x) * enemySpeed, 0);
             }
@@ -114,14 +121,14 @@ public class EnemyController : MonoBehaviour
             if (Time.time >= lastShot + shootCooldown)
             {
                 // try to shoot at player
-                Debug.Log("pewpewpew o inimigo tentou atirar!");
-                lastShot = Timer.time;
+                UnityEngine.Debug.Log("pewpewpew o inimigo tentou atirar!");
+                lastShot = Time.time;
             }
 
-            // shank if too close
-            if (Mathf.abs(playerRb.position.x - transform.position.x) < shankingRange)
+             //shank if too close
+            if (Mathf.Abs(playerRb.position.x - transform.position.x) < shankingRange)
             {
-                Debug.Log("O inimigo tentou esfaquear o player!");
+                UnityEngine.Debug.Log("O inimigo tentou esfaquear o player!");
             }
         }
 
@@ -144,7 +151,7 @@ public class EnemyController : MonoBehaviour
 
     bool CanSeePlayer()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, 200f);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, visionRange);
 
         if (hit.collider != null)
         {
@@ -179,7 +186,7 @@ public class EnemyController : MonoBehaviour
     {
         // same comment from before
         // direction is down
-        Vector2 rayOrigin = transform.position + new Vector2(groundForward * facing);
+        Vector2 rayOrigin = (Vector2)transform.position + new Vector2(groundForward * facing, 0f); //WATCH THIS 0f = y <- THIS MAY BREAK IT ALL
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, groundDown);
 
         if (hit.collider == null)
