@@ -111,7 +111,7 @@ public class EnemyController : MonoBehaviour
             {
                 if (Time.time > lastSeenPlayer + 30f)
                 {
-                    Debug.Log("Inimigo parou de perseguir o player!");
+                    UnityEngine.Debug.Log("Inimigo parou de perseguir o player!");
                     //TODO: should start search idk
                     inCombat = false;
                 }
@@ -161,12 +161,12 @@ public class EnemyController : MonoBehaviour
 
             if (hitObject.CompareTag("Player")) // is player
             {
-                Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.red);
+                UnityEngine.Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.red);
                 return true;
             }
         }
 
-        Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.blue);
+        UnityEngine.Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.blue);
         return false;
     }
 
@@ -180,14 +180,14 @@ public class EnemyController : MonoBehaviour
         {
             if (!hit.collider.gameObject.compareTag("Player"))
             {
-                Debug.DrawRay(transform.position, direction * wallRange, Color.red);
-                Debug.Log("Virando por causa da parede na frente!");
+                UnityEngine.Debug.DrawRay(transform.position, direction * wallRange, Color.red);
+                UnityEngine.Debug.Log("Virando por causa da parede na frente!");
                 //TODO: add check for terrain
                 facing *= -1; // set to inverse
                 return true;
             }
         }
-        Debug.DrawRay(transform.position, direction * wallRange, Color.blue);
+        UnityEngine.Debug.DrawRay(transform.position, direction * wallRange, Color.blue);
 
         return false;
     }
@@ -200,12 +200,12 @@ public class EnemyController : MonoBehaviour
 
         if (hit.collider == null)
         {
-            Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.red);
-            Debug.log("Invertendo direção por causa de chão faltando!");
+            UnityEngine.Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.red);
+            UnityEngine.Debug.log("Invertendo direção por causa de chão faltando!");
             facing *= -1; // set to inverse
             return true;
         }
-        Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.blue);
+        UnityEngine.Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.blue);
 
         return false;
     }
