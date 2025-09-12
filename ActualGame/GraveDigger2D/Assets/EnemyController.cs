@@ -91,8 +91,8 @@ public class EnemyController : MonoBehaviour
 
         // turn around if going to hit a wall or fall
         // these have side effects btw :wink:
-        bool wallResult = checkWall();
-        bool groundResult;
+        bool wallResult = CheckWall();
+        bool groundResult = false;
         if (!wallResult)
         { // only turn once, never know these damn edge cases
             groundResult = CheckGround();
@@ -161,12 +161,12 @@ public class EnemyController : MonoBehaviour
 
             if (hitObject.CompareTag("Player")) // is player
             {
-                UnityEngine.Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.red);
+                UnityEngine.Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.red);
                 return true;
             }
         }
 
-        UnityEngine.Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.blue);
+        UnityEngine.Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue);
         return false;
     }
 
@@ -178,7 +178,7 @@ public class EnemyController : MonoBehaviour
 
         if (hit.collider != null)
         {
-            if (!hit.collider.gameObject.compareTag("Player"))
+            if (!hit.collider.gameObject.CompareTag("Player"))
             {
                 UnityEngine.Debug.DrawRay(transform.position, direction * wallRange, Color.red);
                 UnityEngine.Debug.Log("Virando por causa da parede na frente!");
@@ -196,21 +196,21 @@ public class EnemyController : MonoBehaviour
     {
         // same comment from before
         // direction is down
-        RaycastHit2D hit = Physics2D.Raycast(groundRayOrigin.position, Vector2.down, groundDown);
+        RaycastHit2D hit = Physics2D.Raycast(groundRayOrigin.transform.position, Vector2.down, groundDown);
 
         if (hit.collider == null)
         {
-            UnityEngine.Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.red);
-            UnityEngine.Debug.log("Invertendo direção por causa de chão faltando!");
+            UnityEngine.Debug.DrawRay(groundRayOrigin.transform.position, Vector2.down * groundDown, Color.red);
+            UnityEngine.Debug.Log("Invertendo direção por causa de chão faltando!");
             facing *= -1; // set to inverse
             return true;
         }
-        UnityEngine.Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.blue);
+        UnityEngine.Debug.DrawRay(groundRayOrigin.transform.position, Vector2.down * groundDown, Color.blue);
 
         return false;
     }
 
-    IEnumerator TurnWaitTime()
+    IEnumerator TurnWaitTime() // i am sadness, you will always be remembered
     {
         yield return new WaitForSeconds(4f);
         walking = true;
