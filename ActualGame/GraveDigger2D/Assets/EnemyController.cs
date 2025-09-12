@@ -8,13 +8,13 @@ public class EnemyController : MonoBehaviour
 {
     // codar sem ter o unity aberto pra testar vai ser terrivel
     [SerializeField] private float enemySpeed = 5f;
-    [SerializeField] private float visionRange = 200f;
+    [SerializeField] private float visionRange = 8f;
 
     [SerializeField] private Rigidbody2D playerRb; // to raycast against them
 
     [Header("Raycast settings")]
     [SerializeField] private float wallRange;
-    [SerializeField] private float groundForward;
+    [SerializeField] private GameObject groundRayOrigin;
     [SerializeField] private float groundDown; // goddamn, just ask my if you have any questions
     [SerializeField] private float targetEngagementDistance;
     [SerializeField] private float acceptableRange;
@@ -28,6 +28,8 @@ public class EnemyController : MonoBehaviour
     private float lastSeenPlayer;
     private float lastRaycast;
     private float lastShot;
+    private float lastSeenPlayer;
+
     [SerializeField] private float shootCooldown;
 
     public int facing; // -1 for left, 1 for right
@@ -48,7 +50,7 @@ public class EnemyController : MonoBehaviour
         // the walking variable is set in a different part
         if (walking)
         {
-            rb.velocity = new Vector2(facing * enemySpeed, 0);
+            rb.velocity = new Vector2(facing * enemySpeed, rb.velocity.y);
 
             transform.localScale = new Vector3(facing, 1, 1);
             animaRoyal.SetBool("Walking", true);
@@ -85,15 +87,31 @@ public class EnemyController : MonoBehaviour
                 
             }
             lastRaycast = Time.time;
-            
         }
 
+        // turn around if going to hit a wall or fall
+        // these have side effects btw :wink:
+        bool wallResult = checkWall();
+        bool groundResult;
+        if (!wallResult)
+        { // only turn once, never know these damn edge cases
+            groundResult = CheckGround();
+        }
+
+        if (groundResult || wallResult)
+        {
+            // stop for 4 seconds then go back to normal patrol
+            StartCoroutine(turnWalkingBackOnInLike4SecondsOrSomethingLikeThatJustCheckTheCodeItsReallySimpleYouCanGetIt());
+        }
+
+        // will overrride the facing from check wall and ground
         if (inCombat)
         {
             if (!CanSeePlayer())
             {
                 if (Time.time > lastSeenPlayer + 30f)
                 {
+                    Debug.Log("Inimigo parou de perseguir o player!");
                     //TODO: should start search idk
                     inCombat = false;
                 }
@@ -114,7 +132,7 @@ public class EnemyController : MonoBehaviour
                 // face towards player
                 facing = (int)-direction; // this just works, i can assure you
                 // override previous velocity
-                rb.velocity = new Vector2(Mathf.Sign(targetX - transform.position.x) * enemySpeed, 0);
+                rb.velocity = new Vector2(Mathf.Sign(targetX - transform.position.x) * enemySpeed, rb.velocity.y);
             }
 
 
@@ -125,27 +143,11 @@ public class EnemyController : MonoBehaviour
                 lastShot = Time.time;
             }
 
-             //shank if too close
+            // shank if too close
             if (Mathf.Abs(playerRb.position.x - transform.position.x) < shankingRange)
             {
                 UnityEngine.Debug.Log("O inimigo tentou esfaquear o player!");
             }
-        }
-
-
-        //TODO: esse troço
-        // // raycast against wall and missing floor to turn around
-        // // will reuse hit
-        // if (Physics2D.Raycast(transform.position, transform.position + facing * 0.5f, out hit) ||
-        //     Physics2D.Raycast(transform.position + facing * 16f, transform.position + facing * 0.5f, out hit) ||)
-        // {
-
-        // }
-
-        // these have side effects btw :wink:
-        if (!CheckWall())
-        { // only turn once, never know these damn edge cases
-            CheckGround();
         }
     }
 
@@ -159,10 +161,12 @@ public class EnemyController : MonoBehaviour
 
             if (hitObject.CompareTag("Player")) // is player
             {
+                Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.red);
                 return true;
             }
         }
 
+        Debug.DrawRay(transform.position, directiontoPlayer * visionRange, Color.blue);
         return false;
     }
 
@@ -174,10 +178,16 @@ public class EnemyController : MonoBehaviour
 
         if (hit.collider != null)
         {
-            //TODO: add check for terrain
-            facing *= -1; // set to inverse
-            return true;
+            if (!hit.collider.gameObject.compareTag("Player"))
+            {
+                Debug.DrawRay(transform.position, direction * wallRange, Color.red);
+                Debug.Log("Virando por causa da parede na frente!");
+                //TODO: add check for terrain
+                facing *= -1; // set to inverse
+                return true;
+            }
         }
+        Debug.DrawRay(transform.position, direction * wallRange, Color.blue);
 
         return false;
     }
@@ -186,15 +196,23 @@ public class EnemyController : MonoBehaviour
     {
         // same comment from before
         // direction is down
-        Vector2 rayOrigin = (Vector2)transform.position + new Vector2(groundForward * facing, 0f); //WATCH THIS 0f = y <- THIS MAY BREAK IT ALL
-        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, groundDown);
+        RaycastHit2D hit = Physics2D.Raycast(groundRayOrigin.position, Vector2.down, groundDown);
 
         if (hit.collider == null)
         {
+            Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.red);
+            Debug.log("Invertendo direção por causa de chão faltando!");
             facing *= -1; // set to inverse
             return true;
         }
+        Debug.DrawRay(groundRayOrigin.position, Vector2.Down * groundDown, Color.blue);
 
         return false;
+    }
+
+    IEnumerator turnWalkingBackOnInLike4SecondsOrSomethingLikeThatJustCheckTheCodeItsReallySimpleYouCanGetIt()
+    {
+        yield return new WaitForSeconds(4f);
+        walking = true;
     }
 }
