@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Timers;
 using System.Threading;
+using System.Collections;
 using System;
 using UnityEngine;
 
@@ -25,7 +26,6 @@ public class EnemyController : MonoBehaviour
     private Animator animaRoyal;
     [SerializeField] private bool inCombat;
     [SerializeField] private float shankingRange; // esfaquear
-    private float lastSeenPlayer;
     private float lastRaycast;
     private float lastShot;
     private float lastSeenPlayer;
@@ -101,7 +101,7 @@ public class EnemyController : MonoBehaviour
         if (groundResult || wallResult)
         {
             // stop for 4 seconds then go back to normal patrol
-            StartCoroutine(turnWalkingBackOnInLike4SecondsOrSomethingLikeThatJustCheckTheCodeItsReallySimpleYouCanGetIt());
+            StartCoroutine(TurnWaitTime());
         }
 
         // will overrride the facing from check wall and ground
@@ -210,7 +210,7 @@ public class EnemyController : MonoBehaviour
         return false;
     }
 
-    IEnumerator turnWalkingBackOnInLike4SecondsOrSomethingLikeThatJustCheckTheCodeItsReallySimpleYouCanGetIt()
+    IEnumerator TurnWaitTime()
     {
         yield return new WaitForSeconds(4f);
         walking = true;
