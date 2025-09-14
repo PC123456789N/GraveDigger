@@ -64,7 +64,7 @@ public class EnemyController : MonoBehaviour
         // raycast to the player to see if the enemy can see them
         Vector2 directionToPlayer = (playerRb.position - (Vector2)transform.position).normalized;
 
-        if (Mathf.Sign(playerRb.position.x - transform.position.x) == facing && (Time.time > lastRaycast + 0.2f)) // is facing player
+        if ((Time.time > lastRaycast + 0.2f)) // is facing player
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, visionRange);
             if (hit.collider != null) // can see player
