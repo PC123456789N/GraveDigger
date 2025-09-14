@@ -133,6 +133,12 @@ public class EnemyController : MonoBehaviour
                 facing = (int)-direction; // this just works, i can assure you
                 // override previous velocity
                 rb.velocity = new Vector2(Mathf.Sign(targetX - transform.position.x) * enemySpeed, rb.velocity.y);
+                animaRoyal.SetBool("Walking", true);
+            }
+            else
+            {
+                rb.velocity = new Vector2(0f, rb.velocity.y);
+                animaRoyal.SetBool("Walking", false);
             }
 
 
