@@ -25,7 +25,6 @@ public class EnemyController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animaRoyal;
     [SerializeField] private bool inCombat;
-    [SerializeField] private float shankingRange; // esfaquear
     private float lastRaycast;
     private float lastShot;
     private float lastSeenPlayer;
@@ -147,12 +146,6 @@ public class EnemyController : MonoBehaviour
                 // try to shoot at player
                 UnityEngine.Debug.Log("pewpewpew o inimigo tentou atirar!");
                 lastShot = Time.time;
-            }
-
-            // shank if too close
-            if (Mathf.Abs(playerRb.position.x - transform.position.x) < shankingRange)
-            {
-                UnityEngine.Debug.Log("O inimigo tentou esfaquear o player!");
             }
         }
     }
