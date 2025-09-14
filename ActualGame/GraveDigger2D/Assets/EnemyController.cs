@@ -78,11 +78,13 @@ public class EnemyController : MonoBehaviour
                     // could have put most of these in a single if, but eh
                     inCombat = true;
                     UnityEngine.Debug.Log("Inimigo viu Player!");
+                    lastSeenPlayer = Time.time;
                 }
             }
             else
             {
                 UnityEngine.Debug.Log("he saw nothing");
+                UnityEngine.Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.green);
                 
             }
             lastRaycast = Time.time;
@@ -108,7 +110,7 @@ public class EnemyController : MonoBehaviour
         {
             if (!CanSeePlayer())
             {
-                if (Time.time > lastSeenPlayer + 30f)
+                if (Time.time > lastSeenPlayer + 15f)
                 {
                     UnityEngine.Debug.Log("Inimigo parou de perseguir o player!");
                     //TODO: should start search idk
@@ -117,6 +119,7 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
+                UnityEngine.Debug.Log("kuwabara1");
                 lastSeenPlayer = Time.time;
             }
 
@@ -157,6 +160,7 @@ public class EnemyController : MonoBehaviour
         if (hit.collider != null)
         {
             GameObject hitObject = hit.collider.gameObject;
+            UnityEngine.Debug.Log(hitObject.name);
 
             if (hitObject.CompareTag("Player")) // is player
             {
