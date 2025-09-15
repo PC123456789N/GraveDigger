@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float playerSpeed = 5f;
-
+    [SerializeField] public float playerSpeed = 5f;
+    [SerializeField] private TextMeshProUGUI AmmoAmountText;
     [SerializeField] public GameObject Bullet;
     private Animator anima;
     private Vector2 playerMove;
@@ -20,6 +21,8 @@ public class PlayerController : MonoBehaviour
 
     private bool reloading;
 
+    public float reloadSpeed;
+
     [SerializeField] public float shootCooldown;
 
     [SerializeField] public Camera mainCamera;
@@ -29,6 +32,9 @@ public class PlayerController : MonoBehaviour
     public bool walking;
     public bool armed;
     public int facing;
+    public int hp;
+
+    public float jumpForce;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +45,9 @@ public class PlayerController : MonoBehaviour
         walking = false;
         facing = 1;
         armed = false;
+        hp = 100;
+        jumpForce = 10; //10 é standart
+        reloadSpeed = 10f; //10 é standart
     }
 
     // Update is called once per frame
@@ -107,12 +116,12 @@ public class PlayerController : MonoBehaviour
 
         //sacar arma
 
-        if (Input.GetKey(KeyCode.E) && !armed)
+        if (Input.GetKeyUp(KeyCode.E) && !armed)
         {
             armed = true;
             anima.SetBool("armed", true);
         }
-        else if (Input.GetKey(KeyCode.E) && armed)
+        else if (Input.GetKeyUp(KeyCode.E) && armed)
         {
             armed = false;
             anima.SetBool("armed", false);
@@ -144,7 +153,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             jumping = true;
-            Player.AddForce(Vector2.up * 10f, ForceMode2D.Impulse);
+            Player.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             anima.SetBool("Jumping", true);
         }
     }
@@ -162,10 +171,13 @@ public class PlayerController : MonoBehaviour
 
             anima.SetBool("Shot", true);
 
-            Vector2 BulletPos = new Vector2(Player.position.x, Player.position.y + 1f);
+            Vector2 BulletPos = new Vector2(Player.position.x + facing, Player.position.y + 1.3f);
             GameObject BulletFired = Instantiate(Bullet, BulletPos, Quaternion.Euler(0, 0, 90));
 
             Rigidbody2D bulletRB = BulletFired.GetComponent<Rigidbody2D>();
+
+            AmmoAmountText.text = $"{ammoAmount}/6";
+
             if (facing > 0)
             {
                 bulletRB.velocity = Vector2.right * +20;
@@ -192,13 +204,14 @@ public class PlayerController : MonoBehaviour
         if (reloading == false)
         {
             Debug.Log("Reloading");
+            AmmoAmountText.text = $"R";
             reloading = true;
             // começar animação de recarregar aq
 
-            yield return new WaitForSeconds(100000000.0f);
+            yield return new WaitForSeconds(reloadSpeed);
 
             ammoAmount = 6;
-
+            AmmoAmountText.text = $"{ammoAmount}/6";
             reloading = false;
         }    
     }

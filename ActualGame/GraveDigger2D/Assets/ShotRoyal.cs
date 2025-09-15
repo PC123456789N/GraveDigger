@@ -2,45 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shot : MonoBehaviour
+public class ShotRoyal : MonoBehaviour
 {
     private Rigidbody2D shot;
     [SerializeField] private GameObject player;
-    private Vector2 BulletDirection_ = Vector2.right;
-
-    private Vector2 _BulletDirection = Vector2.left;
     // Start is called before the first frame update
     void Start()
     {
         shot = GetComponent<Rigidbody2D>();
         if (player == null) // se não foi atribuído no Inspector
         {
-            player = GameObject.FindGameObjectWithTag("Player");
+            PlayerController pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         }
-        
-
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        //transform.Translate(BulletSpeed * BulletDirection * Time.deltaTime);
     }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
 
         // Destroi a bala quando colidir com QUALQUER coisa - o player
 
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Player"))
         {
-            Debug.Log("hitted enemy");
-            Destroy(other.gameObject);
+            Debug.Log("hitted Player");
+            PlayerController pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            pc.hp -= 50;
             Destroy(gameObject);
         }
 
-        else if (other.CompareTag("Player"))
+        else if (other.CompareTag("Enemy"))
         {
             
         }

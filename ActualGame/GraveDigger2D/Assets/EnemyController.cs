@@ -28,8 +28,16 @@ public class EnemyController : MonoBehaviour
     private float lastRaycast;
     private float lastShot;
     private float lastSeenPlayer;
+    private int shootingAmount; // fodasse o nome :dedo_do_meio:
+
+    private float lastShotTime;
+
+    private int ammoAmount = 6; // max is 6, as like in a revolver :+1:
+
+    private bool reloading;
 
     [SerializeField] private float shootCooldown;
+    [SerializeField] public GameObject Bullet;
 
     public int facing; // -1 for left, 1 for right
     public bool walking;
@@ -85,7 +93,7 @@ public class EnemyController : MonoBehaviour
             {
                 UnityEngine.Debug.Log("he saw nothing");
                 UnityEngine.Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.green);
-                
+
             }
             lastRaycast = Time.time;
         }
@@ -148,6 +156,7 @@ public class EnemyController : MonoBehaviour
             {
                 // try to shoot at player
                 UnityEngine.Debug.Log("pewpewpew o inimigo tentou atirar!");
+                StartCoroutine(Shoot(facing));
                 lastShot = Time.time;
             }
         }
@@ -217,5 +226,45 @@ public class EnemyController : MonoBehaviour
     {
         yield return new WaitForSeconds(4f);
         walking = true;
+    }
+    
+    IEnumerator Shoot(float facing)
+    {   
+        // 1.5 seconds of cooldown
+        if (Time.time >= lastShotTime + shootCooldown)
+        {
+            shootingAmount += 1;
+
+            lastShotTime = Time.time;
+
+            ammoAmount -= 1;
+
+            animaRoyal.SetBool("Shot", true);
+
+            Vector2 BulletPos = new Vector2(rb.position.x + facing, rb.position.y + 1.3f);
+            GameObject BulletFired = Instantiate(Bullet, BulletPos, Quaternion.Euler(0, 0, 90));
+
+            Rigidbody2D bulletRB = BulletFired.GetComponent<Rigidbody2D>();
+
+
+            if (facing > 0)
+            {
+                bulletRB.velocity = Vector2.right * +20;
+            }
+
+            else if (facing < 0)
+            {
+                bulletRB.velocity = Vector2.right * -20;
+            }
+
+            yield return new WaitForSeconds(0.2f);
+
+            shootingAmount -= 1;
+
+            if (shootingAmount == 0)
+            {
+                animaRoyal.SetBool("Shot", false);
+            }
+        }
     }
 }
