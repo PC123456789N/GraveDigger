@@ -71,7 +71,7 @@ public class EnemyController : MonoBehaviour
         // raycast to the player to see if the enemy can see them
         Vector2 directionToPlayer = (playerRb.position - (Vector2)transform.position).normalized;
 
-        if ((Time.time > lastRaycast + 0.2f)) // is facing player
+        if (Time.time > lastRaycast + 0.2f) // is facing player
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, visionRange);
             if (hit.collider != null) // can see player
@@ -99,16 +99,13 @@ public class EnemyController : MonoBehaviour
         }
 
         // turn around if going to hit a wall or fall
-        // these have side effects btw :wink:
+        // these don't have side effects anymore btw :wink:
         bool wallResult = CheckWall();
-        bool groundResult = false;
-        if (!wallResult)
-        { // only turn once, never know these damn edge cases
-            groundResult = CheckGround();
-        }
+        bool groundResult = CheckGround();
 
         if (groundResult || wallResult)
         {
+            facing *= -1; // invert character direction
             // stop for 4 seconds then go back to normal patrol
             StartCoroutine(TurnWaitTime());
         }
@@ -194,8 +191,6 @@ public class EnemyController : MonoBehaviour
             {
                 UnityEngine.Debug.DrawRay(transform.position, direction * wallRange, Color.red);
                 UnityEngine.Debug.Log("Virando por causa da parede na frente!");
-                //TODO: add check for terrain
-                facing *= -1; // set to inverse
                 return true;
             }
         }
@@ -214,7 +209,6 @@ public class EnemyController : MonoBehaviour
         {
             UnityEngine.Debug.DrawRay(groundRayOrigin.transform.position, Vector2.down * groundDown, Color.red);
             UnityEngine.Debug.Log("Invertendo direção por causa de chão faltando!");
-            facing *= -1; // set to inverse
             return true;
         }
         UnityEngine.Debug.DrawRay(groundRayOrigin.transform.position, Vector2.down * groundDown, Color.blue);
@@ -227,9 +221,9 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(4f);
         walking = true;
     }
-    
+
     IEnumerator Shoot(float facing)
-    {   
+    {
         // 1.5 seconds of cooldown
         if (Time.time >= lastShotTime + shootCooldown)
         {
