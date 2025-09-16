@@ -19,6 +19,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float groundDown; // goddamn, just ask my if you have any questions
     [SerializeField] private float targetEngagementDistance;
     [SerializeField] private float acceptableRange;
+    // a SerializeField for you, and you, and everyone!
+    // Da pra dar e vender
+    [SerializeField] private GameObject backwardsGroundRayOrigin; // uses same value from ground down
 
 
     [Header("Others")]
@@ -124,7 +127,7 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                UnityEngine.Debug.Log("kuwabara1");
+                UnityEngine.Debug.Log("kuwabara1"); // what the fuck is the issue?
                 lastSeenPlayer = Time.time;
             }
 
@@ -133,7 +136,15 @@ public class EnemyController : MonoBehaviour
 
             float targetX = direction * targetEngagementDistance + playerRb.position.x;
 
-            if (Mathf.Abs(targetX - transform.position.x) > acceptableRange)
+            if (CheckGround() || CheckGroundBack())
+            {
+                // face towards player
+                facing = (int)-direction;
+                // if has no ground to go forwards or backwards stop
+                rb.velocity = new Vector2(0f, rb.velocity.y);
+                animaRoyal.SetBool("Walking", false);
+            }
+            else if (Mathf.Abs(targetX - transform.position.x) > acceptableRange)
             {
                 // move towards targetX
                 // face towards player
@@ -144,6 +155,9 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
+                // face towards player
+                // can never be too sure about these damned bugs >:(
+                facing = (int)-direction;
                 rb.velocity = new Vector2(0f, rb.velocity.y);
                 animaRoyal.SetBool("Walking", false);
             }
@@ -181,7 +195,6 @@ public class EnemyController : MonoBehaviour
 
     bool CheckWall()
     {
-        // setting facing will automatically turn around the enemy on next frame btw
         Vector2 direction = facing == 1 ? Vector2.right : Vector2.left;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, wallRange);
 
@@ -190,7 +203,7 @@ public class EnemyController : MonoBehaviour
             if (!hit.collider.gameObject.CompareTag("Player"))
             {
                 UnityEngine.Debug.DrawRay(transform.position, direction * wallRange, Color.red);
-                UnityEngine.Debug.Log("Virando por causa da parede na frente!");
+                UnityEngine.Debug.Log("Parede detectada na frente");
                 return true;
             }
         }
@@ -201,17 +214,31 @@ public class EnemyController : MonoBehaviour
 
     bool CheckGround()
     {
-        // same comment from before
         // direction is down
         RaycastHit2D hit = Physics2D.Raycast(groundRayOrigin.transform.position, Vector2.down, groundDown);
 
         if (hit.collider == null)
         {
             UnityEngine.Debug.DrawRay(groundRayOrigin.transform.position, Vector2.down * groundDown, Color.red);
-            UnityEngine.Debug.Log("Invertendo direção por causa de chão faltando!");
+            UnityEngine.Debug.Log("Chão não detectado na frente!");
             return true;
         }
         UnityEngine.Debug.DrawRay(groundRayOrigin.transform.position, Vector2.down * groundDown, Color.blue);
+
+        return false;
+    }
+
+    bool CheckGroundBack() // wowie i'm great at naming stuff
+    { // used in combat so the enemy doesn't fall off backwards
+        RaycastHit2D hit = Physics2D.Raycast(backwardsGroundRayOrigin.transform.position, Vector2.down, groundDown);
+
+        if (hit.collider == null)
+        {
+            UnityEngine.Debug.DrawRay(backwardsGroundRayOrigin.transform.position, Vector2.down * groundDown, Color.red);
+            UnityEngine.Debug.Log("Chão não detectado atrás!");
+            return true;
+        }
+        UnityEngine.Debug.DrawRay(backwardsGroundRayOrigin.transform.position, Vector2.down * groundDown, Color.blue);
 
         return false;
     }
