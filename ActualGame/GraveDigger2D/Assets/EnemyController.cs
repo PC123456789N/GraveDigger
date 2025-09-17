@@ -13,6 +13,8 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private Rigidbody2D playerRb; // to raycast against them
 
+    [SerializeField] private float maxVerticalRange;
+
     [Header("Raycast settings")]
     [SerializeField] private float wallRange;
     [SerializeField] private GameObject groundRayOrigin;
@@ -129,6 +131,13 @@ public class EnemyController : MonoBehaviour
             {
                 UnityEngine.Debug.Log("kuwabara1"); // what the fuck is the issue?
                 lastSeenPlayer = Time.time;
+            }
+
+            // check if the player is in the above or below floor
+            if (Mathf.Abs(playerRb.position.y - transform.position.y) > maxVerticalRange)
+            {
+                UnityEngine.Debug.Log("Inimigo parou de perseguir por causa de distância vertical!");
+                inCombat = false;
             }
 
             // move backwards or forwards to get within a set amount from target
