@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     [SerializeField] public GameObject MedicMenu;
     [SerializeField] public Image LowHealthPrompt;
     [SerializeField] public PlayerController player;
+    [SerializeField] public GameObject TheActualPlayerObjectAndNotTheScript;
 
 
     [Header("Menu Medico")]
@@ -31,6 +32,10 @@ public class GameController : MonoBehaviour
     public int QntAmoto;
     public bool MedicMenuOpen;
     public bool drugged;
+
+    [Header("Respawnar")]
+    [SerializeField] private Image DeathScreen
+    [SerializeField] private GameObject SpawnPoint
     // Start is called before the first frame update
     void Start()
     {
@@ -48,10 +53,20 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.hp <= 51)
+        if (player.hp <= 0)
+        {
+            Debug.Log("Player morreu!");
+            // ded
+            DeathScreen.SetActive(true);
+
+            Debug.Log("Esperando clicar no botão de respawnar");
+
+            Debug.Log("AVISO: ------- Simulando como um clique aq, ligue a lógica dps");
+            RespawnPlayer();
+        } else if (player.hp <= 51)
         {
             LowHealthPrompt.gameObject.SetActive(true);
-        }
+        } 
         else
         {
             LowHealthPrompt.gameObject.SetActive(false);
@@ -240,5 +255,15 @@ public class GameController : MonoBehaviour
         MainMenu.SetActive(false);
         HUD.SetActive(true);
         Time.timeScale = 1;
+    }
+
+    IEnumerator RespawnPlayer()
+    {
+        Debug.Log("Player respawnou!");
+        // dedn't
+        DeathScreen.SetActive(false);
+        player.hp = 100;
+        TheActualPlayerObjectAndNotTheScript.transform.position = SpawnPoint.transform.position;
+        Debug.Log("Player teleportado de volta");
     }
 }
