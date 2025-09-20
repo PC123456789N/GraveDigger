@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public float shootCooldown;
 
     [SerializeField] public Camera mainCamera;
+    [SerializeField] public audioController GunVFX;
 
     public bool jumping;
 
@@ -47,7 +48,7 @@ public class PlayerController : MonoBehaviour
         armed = false;
         hp = 100;
         jumpForce = 10; //10 é standart
-        reloadSpeed = 10f; //10 é standart
+        reloadSpeed = 2f; //2 é standart
     }
 
     // Update is called once per frame
@@ -116,12 +117,12 @@ public class PlayerController : MonoBehaviour
 
         //sacar arma
 
-        if (Input.GetKeyUp(KeyCode.E) && !armed)
+        if (Input.GetKeyUp(KeyCode.E) && !armed && !reloading)
         {
             armed = true;
             anima.SetBool("armed", true);
         }
-        else if (Input.GetKeyUp(KeyCode.E) && armed)
+        else if (Input.GetKeyUp(KeyCode.E) && armed && !reloading)
         {
             armed = false;
             anima.SetBool("armed", false);
@@ -173,6 +174,7 @@ public class PlayerController : MonoBehaviour
 
             Vector2 BulletPos = new Vector2(Player.position.x + facing, Player.position.y + 1.3f);
             GameObject BulletFired = Instantiate(Bullet, BulletPos, Quaternion.Euler(0, 0, 90));
+            GunVFX.PlayAudioShot();
 
             Rigidbody2D bulletRB = BulletFired.GetComponent<Rigidbody2D>();
 
@@ -187,7 +189,7 @@ public class PlayerController : MonoBehaviour
             {
                 bulletRB.velocity = Vector2.right * -20;
             }
-
+            GunVFX.PlayCockShot();
             yield return new WaitForSeconds(0.2f);
 
             shootingAmount -= 1;
@@ -207,8 +209,22 @@ public class PlayerController : MonoBehaviour
             AmmoAmountText.text = $"R";
             reloading = true;
             // começar animação de recarregar aq
-
+            GunVFX.PlayReloadShot();
             yield return new WaitForSeconds(reloadSpeed);
+
+            GunVFX.PlayReloadShot();
+            yield return new WaitForSeconds(reloadSpeed);
+
+            GunVFX.PlayReloadShot();
+            yield return new WaitForSeconds(reloadSpeed);
+
+            GunVFX.PlayReloadShot();
+            yield return new WaitForSeconds(reloadSpeed);
+
+            GunVFX.PlayReloadShot();
+            yield return new WaitForSeconds(reloadSpeed);
+
+            GunVFX.PlayReloadShot();
 
             ammoAmount = 6;
             AmmoAmountText.text = $"{ammoAmount}/6";

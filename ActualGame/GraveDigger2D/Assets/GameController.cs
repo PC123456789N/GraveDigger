@@ -9,7 +9,9 @@ public class GameController : MonoBehaviour
     [SerializeField] public GameObject MainMenu;
     [SerializeField] public Image Title1;
     [SerializeField] public Image Title2;
+    [SerializeField] public Image Title3;
     [SerializeField] public GameObject PlayButton;
+    [SerializeField] public GameObject PlayButton2;
     [SerializeField] public GameObject HUD;
     [SerializeField] public GameObject MedicMenu;
     [SerializeField] public Image LowHealthPrompt;
@@ -46,9 +48,13 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.hp <= 50)
+        if (player.hp <= 51)
         {
-            
+            LowHealthPrompt.gameObject.SetActive(true);
+        }
+        else
+        {
+            LowHealthPrompt.gameObject.SetActive(false);
         }
     }
 
@@ -56,11 +62,13 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.H) && !MedicMenuOpen)
         {
+            HUD.SetActive(false);
             MedicChart();
             Debug.Log("apertou H");
         }
         else if (Input.GetKeyUp(KeyCode.H) && MedicMenuOpen)
         {
+            HUD.SetActive(true);
             MedicMenu.SetActive(false);
             MedicMenuOpen = false;
         }
@@ -72,15 +80,20 @@ public class GameController : MonoBehaviour
         StartCoroutine(PlayIntro());
     }
 
+    public void StartGame2()
+    {
+        StartCoroutine(PlayIntroPt2());
+    }
+
     //medic menu and DRUGS
     public void MedicChart()
     {
         MedicMenu.SetActive(true);
-        NumTrico.text = $"{QntTrico}x";
-        NumSinap.text = $"{QntSinap}x";
-        NumHalop.text = $"{QntHalop}x";
-        NumBicar.text = $"{QntBicar}x";
-        NumAmoto.text = $"{QntAmoto}x";
+        NumTrico.text = $"{QntTrico}";
+        NumSinap.text = $"{QntSinap}";
+        NumHalop.text = $"{QntHalop}";
+        NumBicar.text = $"{QntBicar}";
+        NumAmoto.text = $"{QntAmoto}";
         MedicMenuOpen = true;
     }
     //functions
@@ -108,30 +121,31 @@ public class GameController : MonoBehaviour
     //coroutines
     IEnumerator UseTricoIE()
     {
-        if (!drugged)
+        if (!drugged && QntTrico > 0)
         {
             drugged = true;
             QntTrico -= 1;
-            NumTrico.text = $"{QntTrico}x";
+            NumTrico.text = $"{QntTrico}";
             player.hp = 100;
             UnityEngine.Debug.Log("Used Trico");
             yield return new WaitForSecondsRealtime(10f);
             drugged = false;
             UnityEngine.Debug.Log("Effect passed");
         }
-        else{
+        else
+        {
             UnityEngine.Debug.Log("Already Drugged");
         }
-        
+
     }
     IEnumerator UseSinapIE()
     {
-        if (!drugged)
+        if (!drugged && QntSinap > 0)
         {
             drugged = true;
             QntSinap -= 1;
-            NumSinap.text = $"{QntSinap}x";
-            player.playerSpeed = 8f;
+            NumSinap.text = $"{QntSinap}";
+            player.playerSpeed = 7f;
             UnityEngine.Debug.Log("Used Sinap");
             yield return new WaitForSecondsRealtime(30f);
             player.playerSpeed = 5f;
@@ -142,19 +156,19 @@ public class GameController : MonoBehaviour
         {
             UnityEngine.Debug.Log("Already Drugged");
         }
-        
+
     }
     IEnumerator UseHalopIE()
     {
-        if (!drugged)
+        if (!drugged && QntHalop > 0)
         {
             drugged = true;
             QntHalop -= 1;
-            NumHalop.text = $"{QntHalop}x";
-            player.reloadSpeed = 5f;
+            NumHalop.text = $"{QntHalop}";
+            player.reloadSpeed = 1f;
             UnityEngine.Debug.Log("Used Halop");
             yield return new WaitForSecondsRealtime(60f);
-            player.reloadSpeed = 10f;
+            player.reloadSpeed = 2f;
             drugged = false;
             UnityEngine.Debug.Log("Effect passed");
         }
@@ -165,11 +179,11 @@ public class GameController : MonoBehaviour
     }
     IEnumerator UseBicarIE()
     {
-        if (!drugged)
+        if (!drugged && QntBicar > 0)
         {
             drugged = true;
             QntSinap -= 1;
-            NumSinap.text = $"{QntSinap}x";
+            NumSinap.text = $"{QntSinap}";
             player.hp += 30;
             UnityEngine.Debug.Log("Used Bicar");
             yield return new WaitForSecondsRealtime(10f);
@@ -183,11 +197,11 @@ public class GameController : MonoBehaviour
     }
     IEnumerator UseAmotoIE()
     {
-        if (!drugged)
+        if (!drugged && QntAmoto > 0)
         {
             drugged = true;
             QntAmoto -= 1;
-            NumAmoto.text = $"{QntAmoto}x";
+            NumAmoto.text = $"{QntAmoto}";
             player.jumpForce = 15f;
             UnityEngine.Debug.Log("Used Amoto");
             yield return new WaitForSecondsRealtime(60f);
@@ -195,7 +209,8 @@ public class GameController : MonoBehaviour
             drugged = false;
             UnityEngine.Debug.Log("Effect passed");
         }
-        else{
+        else
+        {
             UnityEngine.Debug.Log("Already Drugged");
         }
     }
@@ -211,6 +226,17 @@ public class GameController : MonoBehaviour
 
         Title2.CrossFadeAlpha(0f, 1f, true); // 0 = invisível, duration, ignores the time thingie
         Debug.Log("com2");
+        Title1.gameObject.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(1.1f);
+        Title2.gameObject.SetActive(false);
+    }
+
+    IEnumerator PlayIntroPt2()
+    {
+        PlayButton2.SetActive(false);
+        Title3.CrossFadeAlpha(0f, 1f, true);
+        yield return new WaitForSecondsRealtime(1.1f);
         MainMenu.SetActive(false);
         HUD.SetActive(true);
         Time.timeScale = 1;

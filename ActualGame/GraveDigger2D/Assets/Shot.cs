@@ -6,9 +6,13 @@ public class Shot : MonoBehaviour
 {
     private Rigidbody2D shot;
     [SerializeField] private GameObject player;
-    private Vector2 BulletDirection_ = Vector2.right;
 
-    private Vector2 _BulletDirection = Vector2.left;
+    [SerializeField] private GameObject EnemyCorpse;
+
+    [SerializeField] public float CorpseHeight;
+    [SerializeField] public GameObject AudioController;
+
+    private Vector2 CorpsePos;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +21,12 @@ public class Shot : MonoBehaviour
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
+
+        if (AudioController == null) // se não foi atribuído no Inspector
+        {
+            AudioController = GameObject.FindGameObjectWithTag("AudioController");
+        }
+        
         
 
     }
@@ -37,6 +47,14 @@ public class Shot : MonoBehaviour
         {
             Debug.Log("hitted enemy");
             Destroy(other.gameObject);
+            Vector2 CorpsePos = new Vector2(transform.position.x, transform.position.y - CorpseHeight);
+            Instantiate
+            (
+                EnemyCorpse,
+                CorpsePos,
+                Quaternion.Euler(0, 0, 90)
+            );
+            AudioController.GetComponent<audioController>().PlayEnemyScream();    
             Destroy(gameObject);
         }
 

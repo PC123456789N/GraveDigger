@@ -146,6 +146,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  EnemyCorpse: {fileID: 1539684486451492880, guid: 78943325b6d60c942b73c04f79c86535, type: 3}
+  CorpseHeight: 2.7
 --- !u!50 &5215291899397872901
 Rigidbody2D:
   serializedVersion: 4

@@ -7,6 +7,11 @@ public class audioController : MonoBehaviour
     [SerializeField] private PlayerController Player;
 
     [SerializeField] private AudioSource walkingAudio;
+    [SerializeField] private AudioSource GunShotAudio;
+    [SerializeField] private AudioSource GunCockAudio;
+    [SerializeField] private AudioSource GunReloadAudio;
+    [SerializeField] private AudioSource EnemyScreamAudio;
+    [SerializeField] private AudioSource PlayerGruntAudio;
 
     private bool alreadyPlaying;
     // Start is called before the first frame update
@@ -44,6 +49,29 @@ public class audioController : MonoBehaviour
             walkingAudio.Stop();
             alreadyPlaying = false;
         }
+    }
+
+    public void PlayAudioShot()
+    {
+        GunShotAudio.PlayOneShot(GunShotAudio.clip, 1f);
+    }
+
+    public void PlayCockShot()
+    {
+        GunCockAudio.PlayOneShot(GunCockAudio.clip, 1f);
+    }
+
+    public void PlayReloadShot()
+    {
+        GunReloadAudio.PlayOneShot(GunReloadAudio.clip, 1f);
+    }
+    public void PlayEnemyScream()
+    {
+        EnemyScreamAudio.PlayOneShot(EnemyScreamAudio.clip, 1f);
+    }
+    public void PlayPlayerScream()
+    {
+        PlayerGruntAudio.PlayOneShot(PlayerGruntAudio.clip, 1f);
     }
 
     

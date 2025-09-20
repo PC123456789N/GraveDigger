@@ -6,6 +6,7 @@ public class ShotRoyal : MonoBehaviour
 {
     private Rigidbody2D shot;
     [SerializeField] private GameObject player;
+    [SerializeField] public GameObject AudioController;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +14,10 @@ public class ShotRoyal : MonoBehaviour
         if (player == null) // se não foi atribuído no Inspector
         {
             PlayerController pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        }
+        if (AudioController == null) // se não foi atribuído no Inspector
+        {
+            AudioController = GameObject.FindGameObjectWithTag("AudioController");
         }
     }
 
@@ -31,6 +36,7 @@ public class ShotRoyal : MonoBehaviour
             Debug.Log("hitted Player");
             PlayerController pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
             pc.hp -= 50;
+            AudioController.GetComponent<audioController>().PlayPlayerScream();
             Destroy(gameObject);
         }
 
