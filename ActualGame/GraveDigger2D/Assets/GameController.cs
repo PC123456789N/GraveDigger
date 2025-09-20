@@ -34,8 +34,12 @@ public class GameController : MonoBehaviour
     public bool drugged;
 
     [Header("Respawnar")]
-    [SerializeField] private Image DeathScreen
-    [SerializeField] private GameObject SpawnPoint
+    [SerializeField] private Image DeathScreen;
+    [SerializeField] private GameObject SpawnPoint;
+
+    [Header("Audio")]
+    [SerializeField] public GameObject AudioController;
+    public bool played;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,25 +52,31 @@ public class GameController : MonoBehaviour
         QntHalop = 3;
         QntBicar = 3;
         QntAmoto = 3;
+
+        played = false;
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player.hp <= 0)
+        if (player.hp <= 0 && !played)
         {
             Debug.Log("Player morreu!");
             // ded
-            DeathScreen.SetActive(true);
+            DeathScreen.gameObject.SetActive(true);
+            AudioController.GetComponent<audioController>().PlayEnemyScream();
+            Time.timeScale = 0;
+            played = true;
 
             Debug.Log("Esperando clicar no botão de respawnar");
 
             Debug.Log("AVISO: ------- Simulando como um clique aq, ligue a lógica dps");
-            RespawnPlayer();
         } else if (player.hp <= 51)
         {
             LowHealthPrompt.gameObject.SetActive(true);
-        } 
+        }
         else
         {
             LowHealthPrompt.gameObject.SetActive(false);
@@ -131,6 +141,21 @@ public class GameController : MonoBehaviour
     public void UseAmoto()
     {
         StartCoroutine(UseAmotoIE());
+    }
+    public void RespawnPlayer()
+    {
+        Debug.Log("Player respawnou!");
+        // dedn't
+        DeathScreen.gameObject.SetActive(false);
+        player.hp = 100;
+        TheActualPlayerObjectAndNotTheScript.transform.position = SpawnPoint.transform.position;
+        Debug.Log("Player teleportado de volta");
+        Time.timeScale = 1;
+        played = false;
+    }
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     //coroutines
@@ -255,15 +280,5 @@ public class GameController : MonoBehaviour
         MainMenu.SetActive(false);
         HUD.SetActive(true);
         Time.timeScale = 1;
-    }
-
-    IEnumerator RespawnPlayer()
-    {
-        Debug.Log("Player respawnou!");
-        // dedn't
-        DeathScreen.SetActive(false);
-        player.hp = 100;
-        TheActualPlayerObjectAndNotTheScript.transform.position = SpawnPoint.transform.position;
-        Debug.Log("Player teleportado de volta");
     }
 }

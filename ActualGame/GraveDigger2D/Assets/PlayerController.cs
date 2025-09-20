@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
         mainCamera.transform.position = new Vector3(
             Player.position.x,
-            Player.position.y + 2f,
+            Player.position.y + 1f,
             mainCamera.transform.position.z  // mantém o Z da câmera 2D
         );
     }
