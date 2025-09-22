@@ -12,6 +12,8 @@ public class audioController : MonoBehaviour
     [SerializeField] private AudioSource GunReloadAudio;
     [SerializeField] private AudioSource EnemyScreamAudio;
     [SerializeField] private AudioSource PlayerGruntAudio;
+    [SerializeField] private AudioSource OpenMedicAudio;
+    [SerializeField] private AudioSource InjectionAudio;
 
     private bool alreadyPlaying;
     // Start is called before the first frame update
@@ -72,6 +74,14 @@ public class audioController : MonoBehaviour
     public void PlayPlayerScream()
     {
         PlayerGruntAudio.PlayOneShot(PlayerGruntAudio.clip, 1f);
+    }
+    public void PlayMedicOpen()
+    {
+        OpenMedicAudio.PlayOneShot(OpenMedicAudio.clip, 1f);
+    }
+    public void PlayInjectionAudio()
+    {
+        InjectionAudio.PlayOneShot(InjectionAudio.clip, 1f);
     }
 
     

@@ -120,6 +120,7 @@ public class GameController : MonoBehaviour
         NumBicar.text = $"{QntBicar}";
         NumAmoto.text = $"{QntAmoto}";
         MedicMenuOpen = true;
+        AudioController.GetComponent<audioController>().PlayMedicOpen();
     }
     //functions
     public void UseTrico()
@@ -163,6 +164,7 @@ public class GameController : MonoBehaviour
     {
         if (!drugged && QntTrico > 0)
         {
+            AudioController.GetComponent<audioController>().PlayInjectionAudio();
             drugged = true;
             QntTrico -= 1;
             NumTrico.text = $"{QntTrico}";
@@ -182,6 +184,7 @@ public class GameController : MonoBehaviour
     {
         if (!drugged && QntSinap > 0)
         {
+            AudioController.GetComponent<audioController>().PlayInjectionAudio();
             drugged = true;
             QntSinap -= 1;
             NumSinap.text = $"{QntSinap}";
@@ -202,6 +205,7 @@ public class GameController : MonoBehaviour
     {
         if (!drugged && QntHalop > 0)
         {
+            AudioController.GetComponent<audioController>().PlayInjectionAudio();
             drugged = true;
             QntHalop -= 1;
             NumHalop.text = $"{QntHalop}";
@@ -221,6 +225,7 @@ public class GameController : MonoBehaviour
     {
         if (!drugged && QntBicar > 0)
         {
+            AudioController.GetComponent<audioController>().PlayInjectionAudio();
             drugged = true;
             QntSinap -= 1;
             NumSinap.text = $"{QntSinap}";
@@ -239,6 +244,7 @@ public class GameController : MonoBehaviour
     {
         if (!drugged && QntAmoto > 0)
         {
+            AudioController.GetComponent<audioController>().PlayInjectionAudio();
             drugged = true;
             QntAmoto -= 1;
             NumAmoto.text = $"{QntAmoto}";
