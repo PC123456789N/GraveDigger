@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
     // codar sem ter o unity aberto pra testar vai ser terrivel
     [SerializeField] private float enemySpeed = 5f;
     [SerializeField] private float visionRange = 8f;
-
+    [SerializeField] public audioController VFX;
     [SerializeField] private Rigidbody2D playerRb; // to raycast against them
 
     [SerializeField] private float maxVerticalRange;
@@ -273,6 +273,7 @@ public class EnemyController : MonoBehaviour
 
             Vector2 BulletPos = new Vector2(rb.position.x + facing, rb.position.y + 1.3f);
             GameObject BulletFired = Instantiate(Bullet, BulletPos, Quaternion.Euler(0, 0, 90));
+            VFX.PlayAudioShot();
 
             Rigidbody2D bulletRB = BulletFired.GetComponent<Rigidbody2D>();
 
@@ -286,8 +287,8 @@ public class EnemyController : MonoBehaviour
             {
                 bulletRB.velocity = Vector2.right * -20;
             }
-
-            yield return new WaitForSeconds(0.2f);
+            VFX.PlayCockShot();
+            yield return new WaitForSeconds(0.3f);
 
             shootingAmount -= 1;
 

@@ -14,6 +14,10 @@ public class audioController : MonoBehaviour
     [SerializeField] private AudioSource PlayerGruntAudio;
     [SerializeField] private AudioSource OpenMedicAudio;
     [SerializeField] private AudioSource InjectionAudio;
+    [SerializeField] private AudioSource IronDoorAudio;
+    [SerializeField] private AudioSource BulletsVFXAudio;
+    [SerializeField] private AudioSource Bell1Audio;
+    [SerializeField] private AudioSource Bells3Audio;
 
     private bool alreadyPlaying;
     // Start is called before the first frame update
@@ -82,6 +86,22 @@ public class audioController : MonoBehaviour
     public void PlayInjectionAudio()
     {
         InjectionAudio.PlayOneShot(InjectionAudio.clip, 1f);
+    }
+    public void PlayIronDoorAudio()
+    {
+        IronDoorAudio.PlayOneShot(IronDoorAudio.clip, 1f);
+    }
+    public void PlayBulletsVFXAudio()
+    {
+        BulletsVFXAudio.PlayOneShot(BulletsVFXAudio.clip, 1f);
+    }
+    public void Play1BellAudio()
+    {
+        Bell1Audio.PlayOneShot(Bell1Audio.clip, 1f);
+    }
+    public void Play3BellsAudio()
+    {
+        Bells3Audio.PlayOneShot(Bells3Audio.clip, 1f);
     }
 
     

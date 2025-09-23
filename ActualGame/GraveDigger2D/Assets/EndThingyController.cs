@@ -20,6 +20,7 @@ public class EndThingyController : MonoBehaviour
     [SerializeField] public GameObject ReadLetterBTN;
     [SerializeField] public GameObject ContinueBTN;
     [SerializeField] public GameObject ExitBTN;
+    [SerializeField] public audioController VFX;
     public int NumDialog;
     private bool hasTriggered = false;
 
@@ -32,6 +33,7 @@ public class EndThingyController : MonoBehaviour
         if (other.CompareTag("Player") && !hasTriggered)
         {
             UnityEngine.Debug.Log("Fim chegado, parabeinz");
+            VFX.PlayIronDoorAudio();
             StartCoroutine(StartEnding());
             hasTriggered = true;
         }
@@ -67,6 +69,7 @@ public class EndThingyController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         EndText1.gameObject.SetActive(true);
+        VFX.PlayBulletsVFXAudio();
         NextDialogBTN.SetActive(true);
 
     }
@@ -74,6 +77,7 @@ public class EndThingyController : MonoBehaviour
     {
         if (NumDialogFunc == 1)
         {
+            VFX.Play1BellAudio();
             EndText1.CrossFadeAlpha(0f, 2f, true);
             yield return new WaitForSecondsRealtime(2.5f);
             EndText1.gameObject.SetActive(false);
@@ -83,6 +87,7 @@ public class EndThingyController : MonoBehaviour
         }
         else if (NumDialog == 2)
         {
+            VFX.Play1BellAudio();
             EndText2.CrossFadeAlpha(0f, 2f, true);
             yield return new WaitForSecondsRealtime(2.5f);
             EndText2.gameObject.SetActive(false);
@@ -97,6 +102,7 @@ public class EndThingyController : MonoBehaviour
     }
     IEnumerator ReadLetter()
     {
+        VFX.Play1BellAudio();
         ReadLetterBTN.SetActive(false);
         VERYBLACKImage.gameObject.SetActive(true);
         EndText3.CrossFadeAlpha(0f, 2f, true);
@@ -108,6 +114,7 @@ public class EndThingyController : MonoBehaviour
     }
     IEnumerator ReadFinalMessage()
     {
+        VFX.PlayIronDoorAudio();
         VERYBLACKImage.gameObject.SetActive(true);
         VERYBLACKImage.CrossFadeAlpha(0f, 2f, true);
         Letter.CrossFadeAlpha(0f, 2f, true);

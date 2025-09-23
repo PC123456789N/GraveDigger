@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     [SerializeField] public Image Title3;
     [SerializeField] public GameObject PlayButton;
     [SerializeField] public GameObject PlayButton2;
+    [SerializeField] public GameObject ExitButtonMenu;
     [SerializeField] public GameObject HUD;
     [SerializeField] public GameObject MedicMenu;
     [SerializeField] public Image LowHealthPrompt;
@@ -43,7 +44,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale = 1; //ALTER TO 0 AFTER TESTS
+        Time.timeScale = 0; //ALTER TO 0 AFTER TESTS
         MedicMenuOpen = false;
 
         drugged = false;
@@ -146,6 +147,7 @@ public class GameController : MonoBehaviour
     public void RespawnPlayer()
     {
         Debug.Log("Player respawnou!");
+        AudioController.GetComponent<audioController>().Play1BellAudio();
         // dedn't
         DeathScreen.gameObject.SetActive(false);
         player.hp = 100;
@@ -264,22 +266,25 @@ public class GameController : MonoBehaviour
     //Scenery
     IEnumerator PlayIntro() //Makes the Intro
     {
+        AudioController.GetComponent<audioController>().Play3BellsAudio();
         PlayButton.SetActive(false);
+        ExitButtonMenu.SetActive(false);
         Title1.CrossFadeAlpha(0f, 1f, true); // 0 = invisível, duration, ignores the time thingie
         Debug.Log("com1");
 
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(4f);
 
         Title2.CrossFadeAlpha(0f, 1f, true); // 0 = invisível, duration, ignores the time thingie
         Debug.Log("com2");
         Title1.gameObject.SetActive(false);
 
-        yield return new WaitForSecondsRealtime(1.1f);
+        yield return new WaitForSecondsRealtime(3f);
         Title2.gameObject.SetActive(false);
     }
 
     IEnumerator PlayIntroPt2()
     {
+        AudioController.GetComponent<audioController>().PlayIronDoorAudio();
         PlayButton2.SetActive(false);
         Title3.CrossFadeAlpha(0f, 1f, true);
         yield return new WaitForSecondsRealtime(1.1f);
