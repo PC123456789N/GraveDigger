@@ -250,7 +250,7 @@ public class GameController : MonoBehaviour
             drugged = true;
             QntAmoto -= 1;
             NumAmoto.text = $"{QntAmoto}";
-            player.jumpForce = 15f;
+            player.jumpForce = 20f;
             UnityEngine.Debug.Log("Used Amoto");
             yield return new WaitForSecondsRealtime(60f);
             player.jumpForce = 10f;
